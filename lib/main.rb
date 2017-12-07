@@ -1,11 +1,8 @@
-file_location = "../5desk.txt"
-dictionary = []
-if File.exist? file_location
-	File.readlines(file_location).each do |word|
-		if word.length > 4 && word.length < 13
-			dictionary.push(word.to_s)
-			puts word
-		end
-	end
+require_relative "Game.rb"
+
+game = Game.new()
+
+while(game.is_playing)
+	game.make_guess()
+	game.show_results()
 end
-puts dictionary[Random.rand(dictionary.length)]
