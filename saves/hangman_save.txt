@@ -1,1 +1,1 @@
-{:word=>["w", "e", "l", "l", "s", "p", "r", "i", "n", "g"], :word_length=>10, :guesses=>{:w=>"yes", :f=>"no", :g=>"yes", :l=>"yes"}, :number_of_guesses=>1, :max_guess_number=>10, :is_playing=>true}
+{"word":["a","q","u","a","r","i","u","m"],"word_length":8,"guesses":{"a":"yes","f":"no","d":"no"},"number_of_guesses":2,"max_guess_number":10,"is_playing":true}

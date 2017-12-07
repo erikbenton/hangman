@@ -25,7 +25,10 @@ class Game
 		puts "Welcome to Hangman!"
 		puts "You 10 chances to correctly guess the word"
 		puts "To save your game and exit, just type: save"
+		puts "To load a previously saved game, just type: load"
 		puts "To simply exit, just type: exit"
+		self.show_results();
+
 	end
 
 	def load_words(file_location)
@@ -59,17 +62,24 @@ class Game
 			
 			if guess == "save"
 				self.save_game()
-				puts self.as_json()
+				break
 			elsif guess == "exit"
 				self.exit_game()
+				break
+			elsif guess == "load"
+				self.load_game()
+				break
 			elsif guess.length > 1
 				puts "Please enter a single letter"
-			elsif !@guesses[guess.to_sym]
+			elsif !@guesses[guess.to_s]
 				if !@word.include? guess
-					@guesses[guess.to_sym] = "no"
+					@guesses[guess.to_s] = "no"
 					@number_of_guesses += 1
+					if @number_of_guesses == @max_guess_number
+						@is_playing = false
+					end
 				else
-					@guesses[guess.to_sym] = "yes"
+					@guesses[guess.to_s] = "yes"
 				end
 				break
 			else
@@ -82,7 +92,7 @@ class Game
 
 		puts ""
 		@word.each do |letter|
-			if @guesses[letter.to_sym]
+			if @guesses[letter.to_s]
 				print letter.to_s + " "
 			else
 				print "_ "
@@ -103,12 +113,25 @@ class Game
 		file_name = "../saves/hangman_save.txt"
 
 		save_file = File.open(file_name, "w")
-		save_file.print self.as_json()
+		save_file.puts JSON.generate(self)
 		save_file.close
 	end
 
+	def load_game
+		if File.exist?("../saves/hangman_save.txt")
+			load_game = JSON.parse(File.read("../saves/hangman_save.txt"))
+			puts load_game["guesses"]
+			@word = load_game["word"]
+			@word_length = load_game["word_length"]
+			@guesses = load_game["guesses"]
+			@number_of_guesses = load_game["number_of_guesses"]
+			@max_guess_number = load_game["max_guess_number"]
+			@is_playing = load_game["is_playing"]
+		end
+	end
+
 	def exit_game
-		
+		@is_playing = false
 	end
 
 	def as_json(options={})
@@ -120,9 +143,10 @@ class Game
 					max_guess_number: @max_guess_number,
 					is_playing: @is_playing
         }
-    end
+  end
 
   def to_json(*options)
+      
       as_json(*options).to_json(*options)
   end
 
